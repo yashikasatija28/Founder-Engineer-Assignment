@@ -1,0 +1,42 @@
+[
+  {
+    "id": "SYS001",
+    "name": "Acme Client Workspace",
+    "description": "Shared collaboration workspace for the Acme account. Contains client documents, meeting notes, and engagement materials.",
+    "confidential": true,
+    "allowed_roles": ["read", "write", "admin"],
+    "owner": "E010"
+  },
+  {
+    "id": "SYS002",
+    "name": "Marketing Hub",
+    "description": "Campaign management and brand asset platform used by Marketing and partner teams.",
+    "confidential": false,
+    "allowed_roles": ["read", "editor", "admin"],
+    "owner": "E013"
+  },
+  {
+    "id": "SYS003",
+    "name": "Finance Portal",
+    "description": "Internal finance, budgeting, and accounting system. Contains sensitive financial data.",
+    "confidential": true,
+    "allowed_roles": ["read", "analyst", "admin"],
+    "owner": "E011"
+  },
+  {
+    "id": "SYS004",
+    "name": "Engineering GitLab",
+    "description": "Source code repository, CI/CD pipelines, and issue tracking for the engineering team.",
+    "confidential": false,
+    "allowed_roles": ["developer", "maintainer", "owner"],
+    "owner": "E012"
+  },
+  {
+    "id": "SYS005",
+    "name": "HR Connect",
+    "description": "Human resources management system. Contains employee records, payroll, and performance data.",
+    "confidential": true,
+    "allowed_roles": ["read", "hr-admin"],
+    "owner": null
+  }
+]

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Access Portal{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Dashboard</h1>
+  <p>Internal system access provisioning portal</p>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card primary">
+    <div class="stat-label">Total Requests</div>
+    <div class="stat-value">{{ stats.total }}</div>
+    <div class="stat-sub">All time</div>
+  </div>
+  <div class="stat-card warning">
+    <div class="stat-label">Pending Approval</div>
+    <div class="stat-value">{{ stats.pending }}</div>
+    <div class="stat-sub">Awaiting review</div>
+  </div>
+  <div class="stat-card success">
+    <div class="stat-label">Provisioned</div>
+    <div class="stat-value">{{ stats.provisioned }}</div>
+    <div class="stat-sub">Active access grants</div>
+  </div>
+  <div class="stat-card danger">
+    <div class="stat-label">Rejected</div>
+    <div class="stat-value">{{ stats.rejected }}</div>
+    <div class="stat-sub">Declined requests</div>
+  </div>
+</div>
+
+<div class="action-grid">
+  <a href="/employees" class="action-card">
+    <div class="icon indigo">👤</div>
+    <div class="title">Employee Directory</div>
+    <div class="desc">Search employees by name, department, or email</div>
+  </a>
+  <a href="/systems" class="action-card">
+    <div class="icon green">🖥️</div>
+    <div class="title">System Catalog</div>
+    <div class="desc">Browse systems, roles, and access policies</div>
+  </a>
+  <a href="/requests/new" class="action-card">
+    <div class="icon indigo">📋</div>
+    <div class="title">New Access Request</div>
+    <div class="desc">Submit a provisioning request for an employee</div>
+  </a>
+  <a href="/approvals" class="action-card">
+    <div class="icon amber">✅</div>
+    <div class="title">Pending Approvals</div>
+    <div class="desc">Review and approve requests awaiting sign-off</div>
+  </a>
+</div>
+
+{% if stats.recent %}
+<br>
+<div class="card">
+  <div class="card-header">
+    <h2>Recent Requests</h2>
+    <a href="/approvals" class="btn btn-ghost btn-sm">View Pending →</a>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Employee</th><th>System</th><th>Role</th><th>Status</th><th>Submitted</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in stats.recent %}
+        <tr>
+          <td><strong>{{ r.employee_name }}</strong></td>
+          <td>{{ r.system_name }}</td>
+          <td><span class="cell-id">{{ r.role }}</span></td>
+          <td>
+            {% if r.status == 'provisioned' %}
+              <span class="badge badge-provisioned">Provisioned</span>
+            {% elif r.status == 'pending_approval' %}
+              <span class="badge badge-pending">Pending</span>
+            {% else %}
+              <span class="badge badge-rejected">Rejected</span>
+            {% endif %}
+          </td>
+          <td class="cell-muted">{{ r.created_at[:16].replace('T',' ') }}</td>
+          <td><a class="btn btn-ghost btn-xs" href="/requests/{{ r.id }}">View</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

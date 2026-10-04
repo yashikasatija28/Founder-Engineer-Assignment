@@ -1,0 +1,32 @@
+{
+  "SYS001": {
+    "description": "Acme Client Workspace — all access requires approval (confidential client data)",
+    "allowed_departments": ["Consulting", "Engineering"],
+    "auto_approve_roles": [],
+    "requires_approval_roles": ["read", "write", "admin"]
+  },
+  "SYS002": {
+    "description": "Marketing Hub — read and editor auto-approved; admin needs approval",
+    "allowed_departments": ["Marketing", "Consulting", "Engineering", "Finance"],
+    "auto_approve_roles": ["read", "editor"],
+    "requires_approval_roles": ["admin"]
+  },
+  "SYS003": {
+    "description": "Finance Portal — all access requires approval (confidential financial data)",
+    "allowed_departments": ["Finance"],
+    "auto_approve_roles": [],
+    "requires_approval_roles": ["read", "analyst", "admin"]
+  },
+  "SYS004": {
+    "description": "Engineering GitLab — developer and maintainer auto-approved for Engineering; owner needs approval",
+    "allowed_departments": ["Engineering"],
+    "auto_approve_roles": ["developer", "maintainer"],
+    "requires_approval_roles": ["owner"]
+  },
+  "SYS005": {
+    "description": "HR Connect — all access requires approval (sensitive HR data)",
+    "allowed_departments": ["Finance"],
+    "auto_approve_roles": [],
+    "requires_approval_roles": ["read", "hr-admin"]
+  }
+}

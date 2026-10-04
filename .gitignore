@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+
+# Database (portal generates this at runtime)
+portal/portal.db
+
+# Run artefacts
+runs/
+
+# Screenshots helper script
+take_screenshots.py
+docs/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Pytest cache
+.pytest_cache/

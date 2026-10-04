@@ -1,0 +1,74 @@
+[
+  {
+    "id": "E001",
+    "name": "Priya Sharma",
+    "department": "Consulting",
+    "email": "priya.sharma@company.com",
+    "title": "Senior Consultant",
+    "manager_id": "E010"
+  },
+  {
+    "id": "E002",
+    "name": "Priya Kapoor",
+    "department": "Finance",
+    "email": "priya.kapoor@company.com",
+    "title": "Finance Analyst",
+    "manager_id": "E011"
+  },
+  {
+    "id": "E003",
+    "name": "Raj Patel",
+    "department": "Engineering",
+    "email": "raj.patel@company.com",
+    "title": "Software Engineer",
+    "manager_id": "E012"
+  },
+  {
+    "id": "E004",
+    "name": "Aisha Khan",
+    "department": "Marketing",
+    "email": "aisha.khan@company.com",
+    "title": "Marketing Manager",
+    "manager_id": "E013"
+  },
+  {
+    "id": "E005",
+    "name": "Tom Chen",
+    "department": "Consulting",
+    "email": "tom.chen@company.com",
+    "title": "Principal Consultant",
+    "manager_id": "E010"
+  },
+  {
+    "id": "E010",
+    "name": "Sarah Miles",
+    "department": "Consulting",
+    "email": "sarah.miles@company.com",
+    "title": "Consulting Lead",
+    "manager_id": null
+  },
+  {
+    "id": "E011",
+    "name": "David Park",
+    "department": "Finance",
+    "email": "david.park@company.com",
+    "title": "Finance Director",
+    "manager_id": null
+  },
+  {
+    "id": "E012",
+    "name": "Nina Okafor",
+    "department": "Engineering",
+    "email": "nina.okafor@company.com",
+    "title": "Engineering Lead",
+    "manager_id": null
+  },
+  {
+    "id": "E013",
+    "name": "Leo Santos",
+    "department": "Marketing",
+    "email": "leo.santos@company.com",
+    "title": "Marketing Director",
+    "manager_id": null
+  }
+]

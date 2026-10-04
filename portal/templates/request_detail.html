@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block title %}Request {{ req.id[:8] }} — Access Portal{% endblock %}
+{% block content %}
+
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+  <a href="/" class="btn btn-ghost btn-sm">← Back</a>
+  <div class="page-header" style="margin:0;flex:1;">
+    <h1 style="display:flex;align-items:center;gap:10px;">
+      Access Request
+      {% if req.status == 'provisioned' %}
+        <span class="badge badge-provisioned">Provisioned</span>
+      {% elif req.status == 'pending_approval' %}
+        <span class="badge badge-pending">Pending Approval</span>
+      {% else %}
+        <span class="badge badge-rejected">Rejected</span>
+      {% endif %}
+    </h1>
+    <p>ID: <code style="font-family:monospace;font-size:12px;color:var(--primary);">{{ req.id }}</code></p>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;align-items:start;">
+  <div style="display:flex;flex-direction:column;gap:16px;">
+
+    <!-- Request Info -->
+    <div class="card">
+      <div class="card-header"><h2>Request Details</h2></div>
+      <div class="info-grid">
+        <span class="info-label">Employee</span>
+        <span class="info-value"><strong>{{ req.employee_name }}</strong> <span class="cell-id">{{ req.employee_id }}</span></span>
+        <span class="info-label">System</span>
+        <span class="info-value"><strong>{{ req.system_name }}</strong> <span class="cell-id">{{ req.system_id }}</span></span>
+        <span class="info-label">Role</span>
+        <span class="info-value"><span class="cell-id">{{ req.role }}</span></span>
+        <span class="info-label">Justification</span>
+        <span class="info-value">{{ req.justification or '—' }}</span>
+        <span class="info-label">Status</span>
+        <span class="info-value">
+          {% if req.status == 'provisioned' %}
+            <span class="badge badge-provisioned">Provisioned</span>
+          {% elif req.status == 'pending_approval' %}
+            <span class="badge badge-pending">Pending Approval</span>
+          {% else %}
+            <span class="badge badge-rejected">Rejected</span>
+          {% endif %}
+        </span>
+        <span class="info-label">Submitted</span>
+        <span class="info-value cell-muted">{{ req.created_at[:19].replace('T',' ') }} UTC</span>
+        <span class="info-label">Last updated</span>
+        <span class="info-value cell-muted">{{ req.updated_at[:19].replace('T',' ') }} UTC</span>
+      </div>
+    </div>
+
+    <!-- Approval action -->
+    {% if req.status == 'pending_approval' %}
+    <div class="card">
+      <div class="card-header">
+        <h2>⏳ Approval Required</h2>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-warning" style="margin-bottom:16px;">
+          <span class="alert-icon">⚠️</span>
+          <div>This request is waiting for an authorised manager to approve or reject it before access can be provisioned.</div>
+        </div>
+        <div class="approval-section">
+          <div class="approval-card approve-card">
+            <h3>✅ Approve Access</h3>
+            <form method="post" action="/approvals/{{ req.id }}/approve">
+              <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" name="approved_by" placeholder="Full name" required>
+              </div>
+              <div class="form-group">
+                <label>Comment (optional)</label>
+                <input type="text" name="comment" placeholder="Reason for approval">
+              </div>
+              <button type="submit" class="btn btn-success" style="width:100%;">Approve & Provision</button>
+            </form>
+          </div>
+          <div class="approval-card reject-card">
+            <h3>❌ Reject Request</h3>
+            <form method="post" action="/approvals/{{ req.id }}/reject">
+              <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" name="approved_by" placeholder="Full name" required>
+              </div>
+              <div class="form-group">
+                <label>Reason for rejection</label>
+                <input type="text" name="comment" placeholder="Why is this being rejected?" required>
+              </div>
+              <button type="submit" class="btn btn-danger" style="width:100%;">Reject Request</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Audit Trail -->
+    <div class="card">
+      <div class="card-header"><h2>Audit Trail</h2></div>
+      <div class="card-body">
+        <div class="timeline">
+          {% for a in audit %}
+          <div class="timeline-item">
+            <div class="timeline-dot {% if a.action == 'created' %}created{% elif a.action == 'approved' %}approved{% elif a.action == 'rejected' %}rejected{% endif %}">
+              {% if a.action == 'created' %}📋
+              {% elif a.action == 'approved' %}✅
+              {% elif a.action == 'rejected' %}❌
+              {% else %}📝
+              {% endif %}
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-title">
+                {% if a.action == 'created' %}Request submitted
+                {% elif a.action == 'approved' %}Approved by {{ a.actor }}
+                {% elif a.action == 'rejected' %}Rejected by {{ a.actor }}
+                {% else %}{{ a.action | capitalize }} by {{ a.actor }}
+                {% endif %}
+              </div>
+              {% if a.detail %}
+                <div style="font-size:12px;color:var(--text-2);margin-top:2px;">{{ a.detail }}</div>
+              {% endif %}
+              <div class="timeline-meta">{{ a.created_at[:19].replace('T',' ') }} UTC</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Sidebar -->
+  <div style="display:flex;flex-direction:column;gap:16px;">
+    {% if approvals %}
+    <div class="card">
+      <div class="card-header"><h2>Approval Events</h2></div>
+      <div class="card-body" style="padding:12px 16px;">
+        {% for a in approvals %}
+        <div style="padding:10px 0;border-bottom:1px solid var(--border);">
+          {% if a.action == 'approved' %}
+            <span class="badge badge-provisioned">Approved</span>
+          {% else %}
+            <span class="badge badge-rejected">Rejected</span>
+          {% endif %}
+          <div style="font-size:13px;margin-top:6px;"><strong>{{ a.approved_by }}</strong></div>
+          {% if a.comment %}
+            <div style="font-size:12px;color:var(--text-2);margin-top:2px;">{{ a.comment }}</div>
+          {% endif %}
+          <div class="cell-muted" style="margin-top:4px;">{{ a.created_at[:19].replace('T',' ') }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="card">
+      <div class="card-header"><h2>Quick Links</h2></div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:8px;">
+        <a href="/employees?q={{ req.employee_name }}" class="btn btn-ghost btn-sm">👤 View Employee</a>
+        <a href="/systems?q={{ req.system_name }}" class="btn btn-ghost btn-sm">🖥️ View System</a>
+        <a href="/requests/new?employee_id={{ req.employee_id }}&system_id={{ req.system_id }}" class="btn btn-ghost btn-sm">📋 Similar Request</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

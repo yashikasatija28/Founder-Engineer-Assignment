@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Employee Directory{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Employee Directory</h1>
+  <p>Search for employees to view their details or request system access</p>
+</div>
+
+<form class="search-bar" method="get" action="/employees">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" name="q" value="{{ q }}" placeholder="Search by name, employee ID or email…" autofocus>
+  </div>
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+{% if q and not results %}
+  <div class="card">
+    <div class="empty">
+      <div class="empty-icon">👥</div>
+      <div class="empty-title">No employees found</div>
+      <p>No results for "<strong>{{ q }}</strong>". Try a different name or ID.</p>
+    </div>
+  </div>
+{% elif results %}
+  <div class="card">
+    <div class="card-header">
+      <h2>{{ results|length }} result{{ 's' if results|length != 1 }} for "{{ q }}"</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Employee</th><th>Department</th><th>Title</th><th>Email</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in results %}
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:13px;flex-shrink:0;">
+                  {{ e.name[0] }}
+                </div>
+                <div>
+                  <div style="font-weight:600;">{{ e.name }}</div>
+                  <div class="cell-id">{{ e.id }}</div>
+                </div>
+              </div>
+            </td>
+            <td>{{ e.department }}</td>
+            <td style="color:var(--text-2);">{{ e.title }}</td>
+            <td class="cell-muted">{{ e.email }}</td>
+            <td>
+              <a class="btn btn-primary btn-sm"
+                 href="/requests/new?employee_id={{ e.id }}">Request Access</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% else %}
+  <div class="card">
+    <div class="empty">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title">Search the directory</div>
+      <p>Enter a name, employee ID, or email address above to find employees.</p>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}
