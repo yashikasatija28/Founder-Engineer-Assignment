@@ -12,6 +12,8 @@ build/
 
 # Database (portal generates this at runtime)
 portal/portal.db
+portal/portal.db-shm
+portal/portal.db-wal
 
 # Run artefacts
 runs/
